@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19th Hole Putt-Putt | Family Fun in Pretoria East</title>
+    <meta name="description" content="The most popular family environment in the East of Pretoria. Mini-golf, trampolines, waffles, and event venues in Garsfontein.">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js for interactivity -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Animate On Scroll (AOS) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        golfGreen: {
+                            light: '#a3e635',
+                            DEFAULT: '#65a30d',
+                            dark: '#3f6212',
+                        },
+                        playfulPink: '#ff007f',
+                        babyBlue: '#B0E0E6',
+                        playfulYellow: '#ffef00',
+                        vibrantPurple: '#a855f7',
+                        navyBlue: '#000080',
+                    },
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        display: ['Fredoka', 'sans-serif'],
+                    },
+                    animation: {
+                        'drop-in': 'dropIn 1s ease-out forwards',
+                    },
+                    keyframes: {
+                        dropIn: {
+                            '0%': { opacity: '0', transform: 'translateY(-20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+    <script src="js/booking.js" defer></script>
+    <script>
+        function appState() {
+            return {
+                currentBg: '',
+                mobileMenu: false,
+                galleryOpen: false,
+                activeImage: '',
+                cookiesAccepted: false,
+                bookingOpen: false,
+                pendingBookingSelection: '',
+                openBooking(selection = '') {
+                    this.pendingBookingSelection = selection;
+                    this.bookingOpen = true;
+                },
+                openImage(image) {
+                    this.activeImage = image;
+                    this.galleryOpen = true;
+                },
+                closeGallery() {
+                    this.galleryOpen = false;
+                    this.activeImage = '';
+                }
+            };
+        }
+
+        function bookingFlow(selection = '') {
+            return {
+                name: '',
+                email: '',
+                phone: '',
+                selection,
+                date: '',
+                time: '',
+                note: '',
+                submitted: false,
+                submitReservation() {
+                    const message = [
+                        'Hello 19th Hole Putt-Putt, I would like to make a reservation.',
+                        `Name: ${this.name}`,
+                        `Email: ${this.email}`,
+                        `Phone: ${this.phone}`,
+                        `Plan: ${this.selection || 'To be confirmed'}`,
+                        `Date: ${this.date || 'To be confirmed'}`,
+                        `Time: ${this.time || 'To be confirmed'}`,
+                        `Notes: ${this.note || 'None'}`
+                    ].join('\n');
+
+                    window.open(`https://wa.me/27727206321?text=${encodeURIComponent(message)}`, '_blank');
+                    this.submitted = true;
+                }
+            };
+        }
+    </script>
+</head>
+<body class="font-sans text-slate-900" x-data="appState()">
+    <!-- Preloader -->
+    <div id="preloader">
+        <div id="loader-ball" class="loader-ball">19th</div>
+    </div>
+
+    <!-- Background Layer -->
+    <div class="dynamic-bg">
+        <video autoplay muted loop playsinline preload="metadata" class="bg-video">
+            <source src="assets/video/mini-golf-pov.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="bg-overlay" :class="currentBg"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass py-4 px-6 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-golfGreen rounded-full flex items-center justify-center text-white font-bold text-xl">19</div>
+            <span class="font-display font-bold text-xl tracking-tight text-golfGreen-dark">19th Hole <span class="text-slate-600">Putt-Putt</span></span>
+        </div>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex gap-8 font-semibold text-slate-600">
+            <a href="#home" class="hover:text-golfGreen transition-colors">Home</a>
+            <a href="#facilities" class="hover:text-golfGreen transition-colors">Facilities</a>
+            <a href="#venues" class="hover:text-golfGreen transition-colors">Venues</a>
+            <a href="#pricing" class="hover:text-golfGreen transition-colors">Pricing</a>
+            <a href="#menu" class="hover:text-golfGreen transition-colors">Menu</a>
+            <a href="#contact" class="hover:text-golfGreen transition-colors">Contact</a>
+        </div>
+
+        <div class="flex gap-3">
+            <a href="https://wa.me/27727206321?text=Hello%2019th%20Hole%20Putt-Putt!%20I%20would%20like%20more%20information%20about%20your%20facilities." target="_blank" class="hidden sm:block bg-green-500 text-white px-4 py-2 rounded-full font-bold text-sm btn-bounce transition-all">WhatsApp</a>
+            <button @click="openBooking()" class="bg-navyBlue md:bg-golfGreen text-white px-5 py-2 rounded-full font-bold text-sm btn-bounce btn-liquid transition-all shadow-lg shadow-golfGreen/30">Book Now</button>
+            <!-- Mobile Menu Toggle -->
+            <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-slate-600">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div x-show="mobileMenu" x-transition class="fixed inset-0 z-[60] bg-white/95 backdrop-blur-lg flex flex-col items-center justify-center gap-8 font-display text-2xl font-bold text-slate-800">
+        <button @click="mobileMenu = false" class="absolute top-6 right-6 p-2 text-slate-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <a href="#home" @click="mobileMenu = false" class="hover:text-golfGreen transition-colors">Home</a>
+        <a href="#facilities" @click="mobileMenu = false" class="hover:text-golfGreen transition-colors">Facilities</a>
+        <a href="#venues" @click="mobileMenu = false" class="hover:text-golfGreen transition-colors">Venues</a>
+        <a href="#pricing" @click="mobileMenu = false" class="hover:text-golfGreen transition-colors">Pricing</a>
+        <a href="#menu" @click="mobileMenu = false" class="hover:text-golfGreen transition-colors">Menu</a>
+        <a href="#contact" @click="mobileMenu = false" class="hover:text-golfGreen transition-colors">Contact</a>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="max-w-6xl mx-auto text-center animate-drop-in">
+            <h1 class="font-display text-6xl md:text-8xl font-bold leading-tight text-transparent bg-clip-text bg-gradient-to-r from-golfGreen to-babyBlue">
+                The Most Popular <span class="text-golfGreen">Family Environment</span> <br class="hidden md:block"> in Pretoria East
+            </h1>
+        </div>
+    </section>
+
+    <!-- Facilities Overview -->
+    <section id="facilities" class="py-24 px-6">
+        <div class="max-w-6xl mx-auto text-center mb-16">
+            <h2 class="font-display text-4xl md:text-5xl font-bold text-golfGreen mb-4" data-aos="fade-up">Everything in One Place</h2>
+            <p class="text-slate-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">We offer a variety of activities designed for all ages and groups.</p>
+        </div>
+
+        <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="glass p-8 rounded-3xl text-center hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="0">
+                <div class="w-16 h-16 bg-golfGreen/20 text-golfGreen rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 12l2 4"/><path d="M12 8v8"/></svg>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Putt-Putt</h3>
+                <p class="text-slate-600">Challenge your friends to an exciting round of mini-golf on our vibrant course.</p>
+            </div>
+            <div class="glass p-8 rounded-3xl text-center hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-16 h-16 bg-babyBlue/20 text-babyBlue rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Mini Town</h3>
+                <p class="text-slate-600">A magical role-play town where kids can explore and imagine their own world.</p>
+            </div>
+            <div class="glass p-8 rounded-3xl text-center hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-16 h-16 bg-playfulPink/20 text-playfulPink rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Trampolines</h3>
+                <p class="text-slate-600">Two huge trampolines to let the energy fly high!</p>
+            </div>
+            <div class="glass p-8 rounded-3xl text-center hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-16 h-16 bg-playfulYellow/20 text-playfulYellow rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Waffle House</h3>
+                <p class="text-slate-600">Delicious, fresh waffles to fuel your day of adventure.</p>
+            </div>
+            <div class="glass p-8 rounded-3xl text-center hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="400">
+                <div class="w-16 h-16 bg-vibrantPurple/20 text-vibrantPurple rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Coffee House</h3>
+                <p class="text-slate-600">Premium coffee and drinks for the grown-ups to relax.</p>
+            </div>
+            <div class="glass p-8 rounded-3xl text-center hover:shadow-xl transition-all" data-aos="fade-up" data-aos-delay="500">
+                <div class="w-16 h-16 bg-slate-200 text-slate-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                </div>
+                <h3 class="font-display text-2xl font-bold mb-2">Venue Hiring</h3>
+                <p class="text-slate-600">Perfect spaces for birthdays, church groups, and corporate events.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Venues Detail -->
+    <section id="venues" class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-playfulPink mb-4" data-aos="fade-up">Our Event Venues</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">From intimate gatherings to large corporate events, we have the space for you.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in">
+                    <div class="h-48 bg-playfulYellow flex items-center justify-center text-6xl">🏘️</div>
+                    <div class="p-6">
+                        <h3 class="font-display text-2xl font-bold mb-2">Mini Town Venue</h3>
+                        <p class="text-slate-600 mb-4">Includes tables, tablecloths (2 colors), balloons, chairs, and soft play available.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-golfGreen">R950</span>
+                            <span class="text-sm text-slate-500 italic">Unlimited golf @ R40pp</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="h-48 bg-babyBlue flex items-center justify-center text-6xl">🎈</div>
+                    <div class="p-6">
+                        <h3 class="font-display text-2xl font-bold mb-2">Venue 1 & 2</h3>
+                        <p class="text-slate-600 mb-4">Standard party setups with tables, tablecloths (2 colors), balloons, and chairs.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-golfGreen">R450 <small class="text-sm">/venue</small></span>
+                            <span class="text-sm text-slate-500 italic">Unlimited golf @ R40pp</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="h-48 bg-playfulPink flex items-center justify-center text-6xl">🔥</div>
+                    <div class="p-6">
+                        <h3 class="font-display text-2xl font-bold mb-2">Corporate / Braai Venue</h3>
+                        <p class="text-slate-600 mb-4">Premium venue with tables, tablecloths, balloons, chairs, and curtains (2 colors).</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-golfGreen">R850</span>
+                            <span class="text-sm text-slate-500 italic">Unlimited golf @ R40pp</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-24 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-golfGreen mb-4" data-aos="fade-up">Affordable Fun</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Transparent pricing for a day of joy.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all relative overflow-hidden" data-aos="fade-up">
+                    <div class="absolute top-0 right-0 bg-golfGreen text-white px-4 py-1 rounded-bl-xl font-bold text-xs">BEST VALUE</div>
+                    <h3 class="font-display text-2xl font-bold mb-4">Putt-Putt Pack</h3>
+                    <div class="text-4xl font-bold mb-6 text-slate-900">R90 <span class="text-lg font-normal text-slate-500">/person</span></div>
+                    <ul class="space-y-4 text-slate-600 mb-8">
+                        <li class="flex items-center gap-2">✅ 3 games of 18 holes</li>
+                        <li class="flex items-center gap-2">✅ Ticket valid for 1 month</li>
+                        <li class="flex items-center gap-2">✅ All equipment included</li>
+                    </ul>
+                    <button @click="openBooking('Putt-Putt Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
+                </div>
+                <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="font-display text-2xl font-bold mb-4">Single Round</h3>
+                    <div class="text-4xl font-bold mb-6 text-slate-900">R50 <span class="text-lg font-normal text-slate-500">/person</span></div>
+                    <ul class="space-y-4 text-slate-600 mb-8">
+                        <li class="flex items-center gap-2">✅ 18 holes of fun</li>
+                        <li class="flex items-center gap-2">✅ Quick and easy</li>
+                        <li class="flex items-center gap-2">✅ Great for a quick visit</li>
+                    </ul>
+                    <button @click="openBooking('Single Round')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
+                </div>
+                <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="font-display text-2xl font-bold mb-4">Party Packs</h3>
+                    <div class="text-4xl font-bold mb-6 text-slate-900">R120 <span class="text-lg font-normal text-slate-500">/pack</span></div>
+                    <ul class="space-y-4 text-slate-600 mb-8">
+                        <li class="flex items-center gap-2">🧇 1 Waffle + Ice Cream</li>
+                        <li class="flex items-center gap-2">🥤 1 Oros + Packet Chips</li>
+                        <li class="flex items-center gap-2">🍭 Lollipop + 2 Fizzers</li>
+                    </ul>
+                    <button @click="openBooking('Party Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-24 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-vibrantPurple mb-4" data-aos="fade-up">Our Menu</h2>
+                <p class="text-slate-600" data-aos="fade-up" data-aos-delay="100">Delicious treats and refreshing drinks for everyone.</p>
+            </div>
+
+            <div class="space-y-12">
+                <!-- Toasted Sandwiches -->
+                <div class="glass p-8 rounded-3xl" data-aos="fade-up">
+                    <h3 class="font-display text-3xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-playfulYellow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13h12"/><path d="M6 9h12"/><path d="M6 17h12"/><path d="M3 9v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/></svg>
+                        Toasted Sandwiches
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-x-12 gap-y-3">
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Ham & Cheese</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Chicken & Mayo</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Tomato & Cheese</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Cheese</span><span class="font-bold text-golfGreen">R40</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Hotdog</span><span class="font-bold text-golfGreen">R40</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Boerewors Roll</span><span class="font-bold text-golfGreen">R50</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Small Chips</span><span class="font-bold text-golfGreen">R35</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Large Chips</span><span class="font-bold text-golfGreen">R40</span></div>
+                    </div>
+                    <div class="mt-4 text-sm italic text-slate-500">Extra Topping: Cheese – R15</div>
+                </div>
+
+                <!-- Waffles -->
+                <div class="glass p-8 rounded-3xl" data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="font-display text-3xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-playfulPink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Waffle Menu
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-x-12 gap-y-3">
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Plain Waffle (1 scoop)</span><span class="font-bold text-golfGreen">R40</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Chocolate Sauce (1 scoop)</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Heaven Light Choc (1 scoop)</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Big Bite Delight Choc (2 scoop)</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Caramel Milky-Choc Delight (2 scoop)</span><span class="font-bold text-golfGreen">R50</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Caramel Ice-Cream Delight+ (1 scoop)</span><span class="font-bold text-golfGreen">R50</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Caramel Choc-Delight+ (2 scoop)</span><span class="font-bold text-golfGreen">R55</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Big B Marshmallow Choc & Caramel (2 scoop)</span><span class="font-bold text-golfGreen">R60</span></div>
+                    </div>
+                    <div class="mt-4 text-sm italic text-slate-500">Extra Toppings: Bar-One, Milkybar, Peanut Butter, Big B Marshmallow Choc & Caramel – R12</div>
+                </div>
+
+                <!-- Chicken Specials -->
+                <div class="glass p-8 rounded-3xl" data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="font-display text-3xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-babyBlue" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Chicken Specials
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-x-12 gap-y-3">
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Chicken Strips (Small)</span><span class="font-bold text-golfGreen">R50</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Chicken Strips (Large)</span><span class="font-bold text-golfGreen">R75</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Chicken Prego with Chips (Special)</span><span class="font-bold text-golfGreen">R80</span></div>
+                    </div>
+                </div>
+
+                <!-- Coffee & Tea -->
+                <div class="glass p-8 rounded-3xl" data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="font-display text-3xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-vibrantPurple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>
+                        Cozy Coffee & Tea
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-x-12 gap-y-3">
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Americano (R)</span><span class="font-bold text-golfGreen">R30</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Americano (G)</span><span class="font-bold text-golfGreen">R35</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Flat White (S)</span><span class="font-bold text-golfGreen">R30</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Flat White (D)</span><span class="font-bold text-golfGreen">R35</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Cappuccino (R)</span><span class="font-bold text-golfGreen">R35</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Cappuccino (G)</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Latte (S)</span><span class="font-bold text-golfGreen">R40</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Latte (D)</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Rooibos / Five Roses Tea</span><span class="font-bold text-golfGreen">R30</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Chai Latte</span><span class="font-bold text-golfGreen">R40</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Hot Chocolate / Mocha</span><span class="font-bold text-golfGreen">R45</span></div>
+                    </div>
+                    <div class="mt-4 text-sm italic text-slate-500">Size options: S = Single, D = Double, G = Grande, R = Regular</div>
+                </div>
+
+                <!-- Milkshakes & Slushies -->
+                <div class="glass p-8 rounded-3xl" data-aos="fade-up" data-aos-delay="400">
+                    <h3 class="font-display text-3xl font-bold mb-6 flex items-center gap-3 text-slate-900">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-playfulPink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                        Shakes & Slushies
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-x-12 gap-y-3">
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Classic Shake (S)</span><span class="font-bold text-golfGreen">R45</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Classic Shake (L)</span><span class="font-bold text-golfGreen">R55</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Special Shake (S)</span><span class="font-bold text-golfGreen">R55</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Special Shake (L)</span><span class="font-bold text-golfGreen">R60</span></div>
+                        <div class="flex justify-between border-b border-slate-100 py-2"><span>Slushy</span><span class="font-bold text-golfGreen">R30</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Accessibility Callout -->
+    <section class="py-12 px-6">
+        <div class="max-w-4xl mx-auto glass p-6 rounded-2xl flex items-center gap-6 text-center md:text-left border-l-8 border-golfGreen" data-aos="fade-up">
+            <div class="text-4xl">♿</div>
+            <div>
+                <h4 class="font-bold text-lg">Fully Accessible</h4>
+                <p class="text-slate-600">We pride ourselves on being inclusive. Our venue features a large, disability-friendly parking area for your convenience.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-24 px-6 bg-slate-50">
+        <div class="max-w-6xl mx-auto text-center mb-16">
+            <h2 class="font-display text-4xl md:text-5xl font-bold text-slate-900 mb-4" data-aos="fade-up">Experience the Fun</h2>
+            <p class="text-slate-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Take a peek at our courses, cafe, and play areas.</p>
+        </div>
+
+        <div class="max-w-6xl mx-auto relative group" x-data="{
+            activeSlide: 0,
+            slides: [
+                'https://19thhole.co.za/images/res1.jpeg',
+                'https://19thhole.co.za/images/res2.jpeg',
+                'https://19thhole.co.za/images/coffee.jpeg',
+                'https://19thhole.co.za/images/res3.jpeg',
+                'https://19thhole.co.za/images/res4.jpeg',
+                'https://19thhole.co.za/images/slushie.jpeg',
+                'https://19thhole.co.za/images/garden1.jpeg',
+                'https://19thhole.co.za/images/garden2.jpeg',
+                'https://19thhole.co.za/images/garden3.jpeg',
+                'https://19thhole.co.za/images/garden4.jpeg',
+                'https://19thhole.co.za/images/garden5.jpeg',
+                'https://19thhole.co.za/images/garden6.jpeg',
+                'https://19thhole.co.za/images/Course%202/Trampoline1.jpeg',
+                'https://19thhole.co.za/images/Course%202/Trampoline2.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole1.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole2.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole3.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole4.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole5.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole6.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole7.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole8.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole9.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole10.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole11.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole12.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole13.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole14.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole15.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole16.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole17.jpeg',
+                'https://19thhole.co.za/images/Course%201/hole18.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole1.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole2.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole3.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole4.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole5.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole6.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole7.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole8.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole9.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole10.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole11.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole12.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole13.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole14.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole15.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole16.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole17.jpeg',
+                'https://19thhole.co.za/images/Course%202/hole19.jpeg'
+            ],
+            next() { this.activeSlide = (this.activeSlide + 1) % this.slides.length },
+            prev() { this.activeSlide = (this.activeSlide - 1 + this.slides.length) % this.slides.length }
+        }">
+            <!-- Slideshow Wrapper -->
+            <div class="relative overflow-hidden rounded-3xl shadow-2xl aspect-video md:aspect-[21/9]">
+                <div class="flex transition-transform duration-500 ease-out h-full" :style="`transform: translateX(-${activeSlide * 100}%)`">
+                    <template x-for="(slide, index) in slides" :key="index">
+                        <img :src="slide" @click="openImage(slide)" loading="lazy" class="w-full h-full object-cover flex-shrink-0 cursor-pointer hover:scale-105 transition-transform duration-700" alt="Gallery Image">
+                    </template>
+                </div>
+
+                <!-- Controls -->
+                <button @click="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button @click="next()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </button>
+
+                <!-- Indicators -->
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                    <template x-for="(slide, index) in slides" :key="index">
+                        <div @click="activeSlide = index" :class="activeSlide === index ? 'bg-golfGreen w-6' : 'bg-white/50 w-2'" class="h-2 rounded-full cursor-pointer transition-all"></div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Map -->
+
+    <section id="contact" class="py-24 px-6">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
+            <div data-aos="fade-right">
+                <h2 class="font-display text-4xl font-bold mb-8 text-babyBlue">Visit Us</h2>
+                <div class="space-y-6 text-lg">
+                    <div class="flex items-center gap-4">
+                        <span class="text-2xl">📍</span>
+                        <span class="text-babyBlue">241 Serene Street, Garsfontein, Pretoria, 0042</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-2xl">📞</span>
+                        <a href="tel:0727206321" class="text-golfGreen font-bold hover:underline">072 720 6321</a>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-2xl">✉️</span>
+                        <a href="mailto:info@19thhole.co.za" class="text-golfGreen font-bold hover:underline">info@19thhole.co.za</a>
+                    </div>
+                    <div class="mt-8 p-6 glass rounded-3xl">
+                        <h4 class="font-bold mb-4 flex items-center gap-2">🕒 Operating Hours</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm text-slate-600">
+                            <span>Tue - Thu:</span> <span class="font-semibold text-slate-900">08:30 - 17:30</span>
+                            <span>Fri - Sat:</span> <span class="font-semibold text-slate-900">08:30 - 22:00</span>
+                            <span>Sunday:</span> <span class="font-semibold text-slate-900">08:30 - 17:30</span>
+                            <span class="col-span-2 mt-2 italic">* Open 7 days during school & public holidays</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="h-[400px] rounded-3xl overflow-hidden shadow-xl" data-aos="fade-left">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3588.123456789!2d28.345678!3d-25.812345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsTguNzSiyU0.MCJTIDI4SCAyMCczMy40I0U!5e0!3m2!en!za!4v123456789"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 bg-slate-900 text-slate-400 text-center">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <div class="w-8 h-8 bg-golfGreen rounded-full flex items-center justify-center text-white font-bold text-sm">19</div>
+                <span class="font-display font-bold text-xl tracking-tight text-white">19th Hole <span class="text-slate-400">Putt-Putt</span></span>
+            </div>
+            <p class="mb-4 text-babyBlue">241 Serene Street, Garsfontein, Pretoria, 0042 | 072 720 6321</p>
+            <div class="text-xs opacity-50 max-w-2xl mx-auto mb-8 leading-relaxed">
+                AI Disclaimer: Parts of this website (including content and imagery) were created or assisted by artificial intelligence.
+                Prices, availability, and details are subject to change — please confirm bookings directly with 19th Hole Putt-Putt
+                via WhatsApp, phone, or our reservation system.
+            </div>
+            <div class="text-sm border-t border-slate-800 pt-8">
+                &copy; 2026 19th Hole Putt-Putt. Built with precision & fun.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            const ball = document.getElementById('loader-ball');
+            const preloader = document.getElementById('preloader');
+
+            // Start the "zoom into screen" animation
+            ball.classList.add('exit');
+
+            // Hide the entire preloader after the animation finishes
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+            }, 400);
+        });
+    </script>
+
+    <!-- Gallery Lightbox -->
+    <div x-show="galleryOpen" x-transition class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
+        <button @click="closeGallery()" class="absolute top-6 right-6 text-white hover:text-golfGreen transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        <img :src="activeImage" class="max-w-full max-h-full rounded-lg shadow-2xl" alt="Full view">
+    </div>
+
+    <!-- Cookies Disclaimer -->
+    <div x-show="!cookiesAccepted" x-transition class="fixed bottom-0 left-0 w-full z-[120] p-6">
+        <div class="max-w-4xl mx-auto glass bg-white/90 backdrop-blur-md border border-slate-200 p-4 rounded-2xl shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3 text-slate-700">
+                <span class="text-2xl">🍪</span>
+                <p class="text-sm">We use cookies to enhance your experience on our site. By continuing to browse, you agree to our use of cookies.</p>
+            </div>
+            <button @click="cookiesAccepted = true" class="bg-golfGreen text-white px-6 py-2 rounded-full font-bold text-sm btn-bounce whitespace-nowrap">Accept & Close</button>
+        </div>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div x-show="bookingOpen" x-transition class="fixed inset-0 z-[100] flex items-center justify-center p-6">
+        <div @click="bookingOpen = false" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden" x-data="bookingFlow()" x-init="$watch('pendingBookingSelection', value => selection = value)">
+            <!-- Header -->
+            <div class="bg-golfGreen p-6 text-white flex justify-between items-center">
+                <h3 class="font-display text-2xl font-bold">Reservation Draft</h3>
+                <button @click="bookingOpen = false" class="text-white/80 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-8">
+                <div x-show="!submitted" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block font-bold text-sm mb-1">Full Name</label>
+                            <input type="text" x-model="name" required class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-sm mb-1">Email</label>
+                            <input type="email" x-model="email" required class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-sm mb-1">Phone (WhatsApp)</label>
+                            <input type="tel" x-model="phone" required class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-sm mb-1">Selected Plan</label>
+                            <template x-if="selection">
+                                <input type="text" x-model="selection" readonly class="w-full p-3 rounded-xl border border-slate-100 bg-slate-50 font-bold text-golfGreen outline-none">
+                            </template>
+                            <template x-if="!selection">
+                                <select x-model="selection" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
+                                    <option value="">Select a plan...</option>
+                                    <option value="Putt-Putt Pack">Putt-Putt Pack (R90)</option>
+                                    <option value="Single Round">Single Round (R50)</option>
+                                    <option value="Mini Town Venue">Mini Town Venue (R950)</option>
+                                    <option value="Venue 1 & 2">Venue 1 & 2 (R450)</option>
+                                    <option value="Corporate Venue">Corporate / Braai Venue (R850)</option>
+                                    <option value="Party Pack">Party Pack (R120)</option>
+                                </select>
+                            </template>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-sm mb-1">Date</label>
+                            <input type="date" x-model="date" required class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-sm mb-1">Time</label>
+                            <input type="time" x-model="time" required class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-sm mb-1">Special Notes</label>
+                        <textarea x-model="note" rows="3" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none"></textarea>
+                    </div>
+                    <button @click="submitReservation()" :disabled="!name || !email || !phone || !selection || !date || !time" class="w-full py-4 bg-golfGreen text-white font-bold rounded-xl btn-bounce disabled:opacity-50">
+                        Book Now
+                    </button>
+                </div>
+
+                <!-- Success State -->
+                <div x-show="submitted" class="text-center py-8">
+                    <div class="text-6xl mb-4">📩</div>
+                    <h3 class="font-display text-2xl font-bold mb-2">Draft Sent!</h3>
+                    <p class="text-slate-600 mb-8">Your reservation details have been sent to our team via WhatsApp. We will contact you shortly to confirm.</p>
+                    <button @click="bookingOpen = false" class="px-8 py-3 bg-slate-900 text-white font-bold rounded-xl">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
