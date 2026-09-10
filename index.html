@@ -28,7 +28,6 @@
                             light: '#a3e635',
                             DEFAULT: '#65a30d',
                             dark: '#3f6212',
-                            accessible: '#3f6608',
                         },
                         playfulPink: '#ff007f',
                         babyBlue: '#B0E0E6',
@@ -147,7 +146,7 @@
             <a href="https://wa.me/27727206321?text=Hello%2019th%20Hole%20Putt-Putt!%20I%20would%20like%20more%20information%20about%20your%20facilities." target="_blank" class="hidden sm:block bg-green-500 text-white px-4 py-2 rounded-full font-bold text-sm btn-bounce transition-all">WhatsApp</a>
             <button @click="openBooking()" class="bg-navyBlue md:bg-golfGreen text-white px-5 py-2 rounded-full font-bold text-sm btn-bounce btn-liquid transition-all shadow-lg shadow-golfGreen/30">Book Now</button>
             <!-- Mobile Menu Toggle -->
-            <button @click="mobileMenu = !mobileMenu" aria-label="Toggle mobile menu" class="md:hidden p-2 text-slate-600">
+            <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-slate-600">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
@@ -170,7 +169,6 @@
         <a href="#contact" @click="mobileMenu = false" class="hover:text-golfGreen transition-colors">Contact</a>
     </div>
 
-    <main>
     <!-- Hero Section -->
     <section id="home" class="min-h-screen flex items-center justify-center px-6 pt-20">
         <div class="max-w-6xl mx-auto text-center animate-drop-in">
@@ -527,10 +525,10 @@
                 </div>
 
                 <!-- Controls -->
-                <button @click="prev()" aria-label="Previous image" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100">
+                <button @click="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
                 </button>
-                <button @click="next()" aria-label="Next image" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100">
+                <button @click="next()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-3 rounded-full shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
                 </button>
 
@@ -564,7 +562,7 @@
                         <a href="mailto:info@19thhole.co.za" class="text-golfGreen font-bold hover:underline">info@19thhole.co.za</a>
                     </div>
                     <div class="mt-8 p-6 glass rounded-3xl">
-                        <h3 class="font-bold mb-4 flex items-center gap-2">🕒 Operating Hours</h3>
+                        <h4 class="font-bold mb-4 flex items-center gap-2">🕒 Operating Hours</h4>
                         <div class="grid grid-cols-2 gap-2 text-sm text-slate-600">
                             <span>Tue - Thu:</span> <span class="font-semibold text-slate-900">08:30 - 17:30</span>
                             <span>Fri - Sat:</span> <span class="font-semibold text-slate-900">08:30 - 22:00</span>
@@ -577,13 +575,11 @@
             <div class="h-[400px] rounded-3xl overflow-hidden shadow-xl" data-aos="fade-left">
                 <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3588.123456789!2d28.345678!3d-25.812345!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsTguNzSiyU0.MCJTIDI4SCAyMCczMy40I0U!5e0!3m2!en!za!4v123456789"
-                    title="Location Map"
                     width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
                 </iframe>
             </div>
         </div>
     </section>
-</main>
 
     <!-- Footer -->
     <footer class="py-12 px-6 bg-slate-900 text-slate-400 text-center">
@@ -593,7 +589,7 @@
                 <span class="font-display font-bold text-xl tracking-tight text-white">19th Hole <span class="text-slate-400">Putt-Putt</span></span>
             </div>
             <p class="mb-4 text-babyBlue">241 Serene Street, Garsfontein, Pretoria, 0042 | 072 720 6321</p>
-            <div class="text-xs text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
+            <div class="text-xs opacity-50 max-w-2xl mx-auto mb-8 leading-relaxed">
                 AI Disclaimer: Parts of this website (including content and imagery) were created or assisted by artificial intelligence.
                 Prices, availability, and details are subject to change — please confirm bookings directly with 19th Hole Putt-Putt
                 via WhatsApp, phone, or our reservation system.
@@ -622,7 +618,7 @@
 
     <!-- Gallery Lightbox -->
     <div x-show="galleryOpen" x-transition class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
-        <button @click="closeGallery()" aria-label="Close gallery" class="absolute top-6 right-6 text-white hover:text-golfGreen transition-colors">
+        <button @click="closeGallery()" class="absolute top-6 right-6 text-white hover:text-golfGreen transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
         <img :src="activeImage" class="max-w-full max-h-full rounded-lg shadow-2xl" alt="Full view">
@@ -635,7 +631,7 @@
                 <span class="text-2xl">🍪</span>
                 <p class="text-sm">We use cookies to enhance your experience on our site. By continuing to browse, you agree to our use of cookies.</p>
             </div>
-            <button @click="cookiesAccepted = true" aria-label="Accept cookies" class="bg-golfGreen-accessible text-white px-6 py-2 rounded-full font-bold text-sm btn-bounce whitespace-nowrap">Accept & Close</button>
+            <button @click="cookiesAccepted = true" class="bg-golfGreen text-white px-6 py-2 rounded-full font-bold text-sm btn-bounce whitespace-nowrap">Accept & Close</button>
         </div>
     </div>
 
@@ -646,7 +642,7 @@
             <!-- Header -->
             <div class="bg-golfGreen p-6 text-white flex justify-between items-center">
                 <h3 class="font-display text-2xl font-bold">Reservation Draft</h3>
-                <button @click="bookingOpen = false" aria-label="Close booking" class="text-white/80 hover:text-white">
+                <button @click="bookingOpen = false" class="text-white/80 hover:text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
