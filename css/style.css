@@ -1,0 +1,93 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-width: 320px;
+    overflow-x: hidden;
+    background: #f8fafc;
+}
+
+.dynamic-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(163, 230, 53, 0.22), transparent 34%),
+        radial-gradient(circle at 85% 75%, rgba(176, 224, 230, 0.28), transparent 36%),
+        #f8fafc;
+}
+
+.bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.42));
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.86);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+}
+
+.btn-bounce {
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.btn-bounce:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.btn-bounce:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-liquid:hover:not(:disabled) {
+    box-shadow: 0 10px 24px rgba(101, 163, 13, 0.28);
+}
+
+#preloader {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    background: #f8fafc;
+    transition: opacity 250ms ease, visibility 250ms ease;
+}
+
+.loader-ball {
+    display: grid;
+    width: 84px;
+    height: 84px;
+    place-items: center;
+    border-radius: 999px;
+    color: white;
+    font-family: Fredoka, sans-serif;
+    font-weight: 700;
+    background: #65a30d;
+    box-shadow: 0 12px 30px rgba(101, 163, 13, 0.3);
+    transition: transform 400ms ease, opacity 400ms ease;
+}
+
+.loader-ball.exit {
+    transform: scale(1.35);
+    opacity: 0;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
