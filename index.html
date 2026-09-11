@@ -119,6 +119,9 @@
 
     <!-- Background Layer -->
     <div class="dynamic-bg">
+        <video class="background-video" autoplay muted loop playsinline aria-hidden="true">
+            <source src="mini-golf-pov.mp4" type="video/mp4">
+        </video>
         <div class="bg-overlay" :class="currentBg"></div>
     </div>
 
@@ -140,8 +143,8 @@
         </div>
 
         <div class="flex gap-3">
-            <a href="https://wa.me/27727206321?text=Hello%2019th%20Hole%20Putt-Putt!%20I%20would%20like%20more%20information%20about%20your%20facilities." target="_blank" class="hidden sm:block bg-green-500 text-white px-4 py-2 rounded-full font-bold text-sm btn-bounce btn-liquid transition-all">WhatsApp</a>
-            <button @click="openBooking()" class="bg-navyBlue md:bg-golfGreen text-white px-5 py-2 rounded-full font-bold text-sm btn-bounce btn-liquid transition-all shadow-lg shadow-golfGreen/30">Book Now</button>
+            <a href="https://wa.me/27727206321?text=Hello%2019th%20Hole%20Putt-Putt!%20I%20would%20like%20more%20information%20about%20your%20facilities." target="_blank" class="hidden sm:block bg-green-500 text-white px-4 py-2 rounded-full font-bold text-sm btn-bounce btn-liquid nav-liquid transition-all">WhatsApp</a>
+            <button @click="openBooking()" class="bg-navyBlue md:bg-golfGreen text-white px-5 py-2 rounded-full font-bold text-sm btn-bounce btn-liquid nav-liquid transition-all shadow-lg shadow-golfGreen/30">Book Now</button>
             <!-- Mobile Menu Toggle -->
             <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 text-slate-600">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -292,7 +295,7 @@
                         <li class="flex items-center gap-2">✅ Ticket valid for 1 month</li>
                         <li class="flex items-center gap-2">✅ All equipment included</li>
                     </ul>
-                    <button @click="openBooking('Putt-Putt Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
+                    <button @click="openBooking('Putt-Putt Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid nav-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
                 </div>
                 <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all" data-aos="fade-up" data-aos-delay="100">
                     <h3 class="font-display text-2xl font-bold mb-4">Single Round</h3>
@@ -302,7 +305,7 @@
                         <li class="flex items-center gap-2">✅ Quick and easy</li>
                         <li class="flex items-center gap-2">✅ Great for a quick visit</li>
                     </ul>
-                    <button @click="openBooking('Single Round')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
+                    <button @click="openBooking('Single Round')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid nav-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
                 </div>
                 <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all" data-aos="fade-up" data-aos-delay="200">
                     <h3 class="font-display text-2xl font-bold mb-4">Party Packs</h3>
@@ -312,7 +315,7 @@
                         <li class="flex items-center gap-2">🥤 1 Oros + Packet Chips</li>
                         <li class="flex items-center gap-2">🍭 Lollipop + 2 Fizzers</li>
                     </ul>
-                    <button @click="openBooking('Party Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
+                    <button @click="openBooking('Party Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid nav-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
                 </div>
             </div>
         </div>

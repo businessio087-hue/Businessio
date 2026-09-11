@@ -23,5 +23,7 @@ A professional, high-contrast marketing landing page for **19th Hole Putt-Putt**
 - `js/booking.js`: Reservation handling.
 - `assets/`: Media assets (videos, etc.).
 
+Add the background video as `assets/putt-putt-background.mp4`. The page falls back to its existing gradient background if the video is unavailable.
+
 ## 🌐 Deployment
 This project is optimized for **GitHub Pages**. Simply push the code to a GitHub repository and enable Pages in the settings.
