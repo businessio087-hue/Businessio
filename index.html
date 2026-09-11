@@ -67,8 +67,10 @@
                 cookiesAccepted: false,
                 bookingOpen: false,
                 pendingBookingSelection: '',
-                openBooking(selection = '') {
+                pendingBookingAddOn: '',
+                openBooking(selection = '', addOn = '') {
                     this.pendingBookingSelection = selection;
+                    this.pendingBookingAddOn = addOn;
                     this.bookingOpen = true;
                 },
                 openImage(image) {
@@ -87,18 +89,50 @@
                 name: '',
                 email: '',
                 phone: '',
+                people: 1,
                 selection,
+                addOn: '',
                 date: '',
                 time: '',
                 note: '',
                 submitted: false,
+                prices: {
+                    'Putt-Putt Pack': 90,
+                    'Single Round': 50,
+                    'Mini Town Venue': 950,
+                    'Venue 1 & 2': 450,
+                    'Corporate / Braai Venue': 850,
+                    'Party Pack': 120
+                },
+                get firstName() {
+                    return this.name.trim().split(/\s+/)[0] || 'there';
+                },
+                get peopleCount() {
+                    return Math.max(1, Number(this.people) || 1);
+                },
+                get baseTotal() {
+                    const perPersonPlans = ['Putt-Putt Pack', 'Single Round'];
+                    const multiplier = perPersonPlans.includes(this.selection) ? this.peopleCount : 1;
+                    return (this.prices[this.selection] || 0) * multiplier;
+                },
+                get addOnTotal() {
+                    return this.addOn === 'Party Pack' ? this.prices['Party Pack'] * this.peopleCount : 0;
+                },
+                get total() {
+                    return this.baseTotal + this.addOnTotal;
+                },
+                get chosenItems() {
+                    return [this.selection, this.addOn].filter(Boolean);
+                },
                 submitReservation() {
                     const message = [
-                        'Hello 19th Hole Putt-Putt, I would like to make a reservation.',
+                        `Hi 19th Hole Putt-Putt, this is ${this.firstName}. Please confirm my booking request.`,
                         `Name: ${this.name}`,
                         `Email: ${this.email}`,
                         `Phone: ${this.phone}`,
-                        `Plan: ${this.selection || 'To be confirmed'}`,
+                        `Number of people: ${this.peopleCount}`,
+                        `Items: ${this.chosenItems.join(', ')}`,
+                        `Total: R${this.total}`,
                         `Date: ${this.date || 'To be confirmed'}`,
                         `Time: ${this.time || 'To be confirmed'}`,
                         `Notes: ${this.note || 'None'}`
@@ -182,7 +216,7 @@
     <section id="facilities" class="py-24 px-6">
         <div class="max-w-6xl mx-auto text-center mb-16">
             <h2 class="font-display text-4xl md:text-5xl font-bold text-golfGreen mb-4" data-aos="fade-up">Everything in One Place</h2>
-            <p class="text-slate-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">We offer a variety of activities designed for all ages and groups.</p>
+            <p class="text-golfGreen max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">We offer a variety of activities designed for all ages and groups.</p>
         </div>
 
         <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -282,7 +316,7 @@
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="font-display text-4xl md:text-5xl font-bold text-golfGreen mb-4" data-aos="fade-up">Affordable Fun</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Transparent pricing for a day of joy.</p>
+                <p class="text-golfGreen max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Transparent pricing for a day of joy.</p>
             </div>
 
             <div class="grid md:grid-cols-3 gap-8">
@@ -315,7 +349,7 @@
                         <li class="flex items-center gap-2">🥤 1 Oros + Packet Chips</li>
                         <li class="flex items-center gap-2">🍭 Lollipop + 2 Fizzers</li>
                     </ul>
-                    <button @click="openBooking('Party Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid nav-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
+                    <button @click="openBooking('', 'Party Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid nav-liquid border border-slate-200 shadow-sm hover:text-white">+ Add</button>
                 </div>
             </div>
         </div>
@@ -325,8 +359,8 @@
     <section id="menu" class="py-24 px-6">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="font-display text-4xl md:text-5xl font-bold text-vibrantPurple mb-4" data-aos="fade-up">Our Menu</h2>
-                <p class="text-slate-600" data-aos="fade-up" data-aos-delay="100">Delicious treats and refreshing drinks for everyone.</p>
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-[#c2410c] mb-4" data-aos="fade-up">Our Menu</h2>
+                <p class="text-[#c2410c]" data-aos="fade-up" data-aos-delay="100">Delicious treats and refreshing drinks for everyone.</p>
             </div>
 
             <div class="space-y-12">
@@ -535,11 +569,11 @@
                     </div>
                     <div class="flex items-center gap-4">
                         <span class="text-2xl">📞</span>
-                        <a href="tel:0727206321" class="text-golfGreen font-bold hover:underline">072 720 6321</a>
+                        <a href="tel:0727206321" class="text-babyBlue font-bold hover:underline">072 720 6321</a>
                     </div>
                     <div class="flex items-center gap-4">
                         <span class="text-2xl">✉️</span>
-                        <a href="mailto:info@19thhole.co.za" class="text-golfGreen font-bold hover:underline">info@19thhole.co.za</a>
+                        <a href="mailto:info@19thhole.co.za" class="text-babyBlue font-bold hover:underline">info@19thhole.co.za</a>
                     </div>
                     <div class="mt-8 p-6 glass rounded-3xl">
                         <h4 class="font-bold mb-4 flex items-center gap-2">🕒 Operating Hours</h4>
@@ -618,10 +652,10 @@
     <!-- Reservation Modal -->
     <div x-show="bookingOpen" x-transition class="fixed inset-0 z-[100] flex items-center justify-center p-6">
         <div @click="bookingOpen = false" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden" x-data="bookingFlow()" x-init="$watch('pendingBookingSelection', value => selection = value)">
+        <div class="relative bg-white w-full max-w-lg max-h-[calc(100vh-3rem)] rounded-3xl shadow-2xl overflow-hidden flex flex-col" x-data="bookingFlow()" x-init="$watch('pendingBookingSelection', value => selection = value); $watch('pendingBookingAddOn', value => addOn = value)">
             <!-- Header -->
             <div class="bg-golfGreen p-6 text-white flex justify-between items-center">
-                <h3 class="font-display text-2xl font-bold">Reservation Draft</h3>
+            <h3 class="font-display text-2xl font-bold">Booking portal</h3>
                 <button @click="bookingOpen = false" class="text-white/80 hover:text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -630,7 +664,7 @@
             </div>
 
             <!-- Modal Body -->
-            <div class="p-8">
+            <div class="p-8 overflow-y-auto">
                 <div x-show="!submitted" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -646,6 +680,10 @@
                             <input type="tel" x-model="phone" required class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
                         </div>
                         <div>
+                            <label class="block font-bold text-sm mb-1" for="booking-people">Number of people</label>
+                            <input id="booking-people" type="number" x-model.number="people" min="1" step="1" required class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
+                        </div>
+                        <div>
                             <label class="block font-bold text-sm mb-1">Selected Plan</label>
                             <template x-if="selection">
                                 <input type="text" x-model="selection" readonly class="w-full p-3 rounded-xl border border-slate-100 bg-slate-50 font-bold text-golfGreen outline-none">
@@ -658,9 +696,17 @@
                                     <option value="Mini Town Venue">Mini Town Venue (R950)</option>
                                     <option value="Venue 1 & 2">Venue 1 & 2 (R450)</option>
                                     <option value="Corporate Venue">Corporate / Braai Venue (R850)</option>
-                                    <option value="Party Pack">Party Pack (R120)</option>
                                 </select>
                             </template>
+                        </div>
+                        <div class="md:col-span-2 rounded-xl border border-golfGreen/30 bg-golfGreen/5 p-4">
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" value="Party Pack" x-model="addOn" class="mt-1 h-5 w-5 accent-golfGreen">
+                                <span>
+                                    <span class="block font-bold">Add Party Pack <span class="text-golfGreen">+ R120</span></span>
+                                    <span class="block text-sm text-slate-600">Waffle, ice cream, Oros, chips, lollipop and fizzers.</span>
+                                </span>
+                            </label>
                         </div>
                         <div>
                             <label class="block font-bold text-sm mb-1">Date</label>
@@ -675,16 +721,34 @@
                         <label class="block font-bold text-sm mb-1">Special Notes</label>
                         <textarea x-model="note" rows="3" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none"></textarea>
                     </div>
-                    <button @click="submitReservation()" :disabled="!name || !email || !phone || !selection || !date || !time" class="w-full py-4 bg-golfGreen text-white font-bold rounded-xl btn-bounce disabled:opacity-50">
-                        Book Now
+                    <button @click="submitReservation()" :disabled="!name || !email || !phone || !people || people < 1 || !selection || !date || !time" class="w-full py-4 bg-golfGreen text-white font-bold rounded-xl btn-bounce disabled:opacity-50">
+                        Finalise Booking
                     </button>
                 </div>
 
                 <!-- Success State -->
                 <div x-show="submitted" class="text-center py-8">
                     <div class="text-6xl mb-4">📩</div>
-                    <h3 class="font-display text-2xl font-bold mb-2">Draft Sent!</h3>
-                    <p class="text-slate-600 mb-8">Your reservation details have been sent to our team via WhatsApp. We will contact you shortly to confirm.</p>
+                    <h3 class="font-display text-2xl font-bold mb-2">Thanks, <span x-text="firstName"></span>!</h3>
+                    <p class="text-slate-600 mb-6">Your booking summary has been sent to our team via WhatsApp.</p>
+                    <div class="rounded-2xl bg-slate-50 p-4 text-left mb-8">
+                        <div class="flex justify-between gap-4 py-1">
+                            <span>Number of people</span>
+                            <span class="font-bold" x-text="peopleCount"></span>
+                        </div>
+                        <div class="flex justify-between gap-4 py-1" x-show="selection">
+                            <span x-text="selection"></span>
+                            <span class="font-bold" x-text="`R${baseTotal}`"></span>
+                        </div>
+                        <div class="flex justify-between gap-4 py-1" x-show="addOn === 'Party Pack'">
+                            <span>Party Pack add-on</span>
+                            <span class="font-bold" x-text="`R${addOnTotal}`"></span>
+                        </div>
+                        <div class="flex justify-between gap-4 border-t border-slate-200 mt-2 pt-2 font-bold">
+                            <span>Total</span>
+                            <span class="text-golfGreen" x-text="`R${total}`"></span>
+                        </div>
+                    </div>
                     <button @click="bookingOpen = false" class="px-8 py-3 bg-slate-900 text-white font-bold rounded-xl">Close</button>
                 </div>
             </div>
