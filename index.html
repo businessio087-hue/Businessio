@@ -6,7 +6,7 @@
     <title>19th Hole Putt-Putt | Family Fun in Pretoria East</title>
     <meta name="description" content="The most popular family environment in the East of Pretoria. Mini-golf, trampolines, waffles, and event venues in Garsfontein.">
     <meta name="theme-color" content="#65a30d">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23fff' stroke='%2365a30d' stroke-width='6'/%3E%3Cg fill='%23d7dee8'%3E%3Ccircle cx='25' cy='30' r='4'/%3E%3Ccircle cx='42' cy='20' r='4'/%3E%3Ccircle cx='65' cy='24' r='4'/%3E%3Ccircle cx='77' cy='42' r='4'/%3E%3Ccircle cx='25' cy='67' r='4'/%3E%3Ccircle cx='73' cy='72' r='4'/%3E%3C/g%3E%3Ctext x='50' y='57' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='700' fill='%23000080'%3E19th%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="19th%20logo.png">
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -66,11 +66,22 @@
                 activeImage: '',
                 cookiesAccepted: false,
                 bookingOpen: false,
+                partyPackPromptOpen: false,
+                pendingPartyPack: 'No Party Pack',
                 pendingBookingSelection: '',
                 pendingBookingAddOn: '',
                 openBooking(selection = '', addOn = '') {
                     this.pendingBookingSelection = selection;
                     this.pendingBookingAddOn = addOn;
+                    if (['Mini Town Venue', 'Venue 1 & 2', 'Corporate / Braai Venue'].includes(selection)) {
+                        this.partyPackPromptOpen = true;
+                        return;
+                    }
+                    this.bookingOpen = true;
+                },
+                continueToBooking(addPartyPack = false) {
+                    this.pendingPartyPack = addPartyPack ? 'Party Pack (R120)' : 'No Party Pack';
+                    this.partyPackPromptOpen = false;
                     this.bookingOpen = true;
                 },
                 openImage(image) {
@@ -80,6 +91,29 @@
                 closeGallery() {
                     this.galleryOpen = false;
                     this.activeImage = '';
+                },
+                venueHover(event) {
+                    const backgroundVideo = document.querySelector('.background-video');
+                    if (backgroundVideo) {
+                        backgroundVideo.pause();
+                    }
+                    const venueVideo = event.currentTarget.querySelector('.venue-video');
+                    if (venueVideo) {
+                        venueVideo.play().catch(() => {});
+                    }
+                    document.body.classList.add('venue-hover-active');
+                },
+                venueLeave(event) {
+                    const backgroundVideo = document.querySelector('.background-video');
+                    if (backgroundVideo) {
+                        backgroundVideo.play().catch(() => {});
+                    }
+                    const venueVideo = event.currentTarget.querySelector('.venue-video');
+                    if (venueVideo) {
+                        venueVideo.pause();
+                        venueVideo.currentTime = 0;
+                    }
+                    document.body.classList.remove('venue-hover-active');
                 }
             };
         }
@@ -92,6 +126,7 @@
                 people: 1,
                 selection,
                 addOn: '',
+                partyPack: 'No Party Pack',
                 date: '',
                 time: '',
                 note: '',
@@ -132,6 +167,8 @@
                         `Phone: ${this.phone}`,
                         `Number of people: ${this.peopleCount}`,
                         `Items: ${this.chosenItems.join(', ')}`,
+                        `Plan: ${this.selection || 'To be confirmed'}`,
+                        `Party Pack: ${this.partyPack}`,
                         `Total: R${this.total}`,
                         `Date: ${this.date || 'To be confirmed'}`,
                         `Time: ${this.time || 'To be confirmed'}`,
@@ -148,7 +185,9 @@
 <body class="font-sans text-slate-900" x-data="appState()">
     <!-- Preloader -->
     <div id="preloader">
-        <div id="loader-ball" class="loader-ball">19th</div>
+        <div id="loader-ball" class="loader-ball">
+            <img src="19th%20logo.png" alt="19th Hole Putt-Putt" class="loader-logo">
+        </div>
     </div>
 
     <!-- Background Layer -->
@@ -161,9 +200,8 @@
 
     <!-- Navigation -->
     <nav class="fixed top-0 w-full z-50 glass py-4 px-6 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-golfGreen rounded-full flex items-center justify-center text-white font-bold text-xl">19</div>
-            <span class="font-display font-bold text-xl tracking-tight text-golfGreen-dark">19th Hole <span class="text-slate-600">Putt-Putt</span></span>
+        <div class="flex items-center">
+            <img src="19th%20logo.png" alt="19th Hole Putt-Putt" class="w-36 h-14 object-contain object-left">
         </div>
 
         <!-- Desktop Menu -->
@@ -269,13 +307,17 @@
     <section id="venues" class="py-24 px-6">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
-                <h2 class="font-display text-4xl md:text-5xl font-bold text-playfulPink mb-4" data-aos="fade-up">Our Event Venues</h2>
-                <p class="text-slate-600 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">From intimate gatherings to large corporate events, we have the space for you.</p>
+                <h2 class="font-display text-4xl md:text-5xl font-bold text-orange-500 mb-4" data-aos="fade-up">Our Event Venues</h2>
+                <p class="text-orange-500 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">From intimate gatherings to large corporate events, we have the space for you.</p>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in">
-                    <div class="h-48 bg-playfulYellow flex items-center justify-center text-6xl">🏘️</div>
+                <div class="venue-card glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in" @mouseenter="venueHover($event)" @mouseleave="venueLeave($event)">
+                    <div class="venue-media h-48 bg-playfulYellow overflow-hidden">
+                        <video class="venue-video" muted loop playsinline preload="metadata" aria-label="Golf balls spilling from basket video" onloadedmetadata="this.currentTime=9">
+                            <source src="Golf_balls_spilling_from_basket_20260925114429.mp4" type="video/mp4">
+                        </video>
+                    </div>
                     <div class="p-6">
                         <h3 class="font-display text-2xl font-bold mb-2">Mini Town Venue</h3>
                         <p class="text-slate-600 mb-4">Includes tables, tablecloths (2 colors), balloons, chairs, and soft play available.</p>
@@ -283,10 +325,15 @@
                             <span class="text-2xl font-bold text-golfGreen">R950</span>
                             <span class="text-sm text-slate-500 italic">Unlimited golf @ R40pp</span>
                         </div>
+                        <button @click="openBooking('Mini Town Venue')" class="venue-booking-button w-full mt-6 py-3 rounded-xl bg-white text-golfGreen hover:text-white font-bold btn-bounce btn-liquid nav-liquid shadow-sm">Book Now</button>
                     </div>
                 </div>
-                <div class="glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in" data-aos-delay="100">
-                    <div class="h-48 bg-babyBlue flex items-center justify-center text-6xl">🎈</div>
+                <div class="venue-card glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in" data-aos-delay="100" @mouseenter="venueHover($event)" @mouseleave="venueLeave($event)">
+                    <div class="venue-media h-48 bg-babyBlue overflow-hidden">
+                        <video class="venue-video" muted loop playsinline preload="metadata" aria-label="Balloons floating in the air video">
+                            <source src="colorful-balloons.mp4" type="video/mp4">
+                        </video>
+                    </div>
                     <div class="p-6">
                         <h3 class="font-display text-2xl font-bold mb-2">Venue 1 & 2</h3>
                         <p class="text-slate-600 mb-4">Standard party setups with tables, tablecloths (2 colors), balloons, and chairs.</p>
@@ -294,10 +341,15 @@
                             <span class="text-2xl font-bold text-golfGreen">R450 <small class="text-sm">/venue</small></span>
                             <span class="text-sm text-slate-500 italic">Unlimited golf @ R40pp</span>
                         </div>
+                        <button @click="openBooking('Venue 1 & 2')" class="venue-booking-button w-full mt-6 py-3 rounded-xl bg-white text-golfGreen hover:text-white font-bold btn-bounce btn-liquid nav-liquid shadow-sm">Book Now</button>
                     </div>
                 </div>
-                <div class="glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in" data-aos-delay="200">
-                    <div class="h-48 bg-playfulPink flex items-center justify-center text-6xl">🔥</div>
+                <div class="venue-card glass rounded-3xl overflow-hidden hover:shadow-2xl transition-all group" data-aos="zoom-in" data-aos-delay="200" @mouseenter="venueHover($event)" @mouseleave="venueLeave($event)">
+                    <div class="venue-media h-48 bg-playfulPink flex items-center justify-center text-6xl">
+                        <video class="venue-video" muted loop playsinline preload="metadata" aria-label="People gathering food at a buffet">
+                            <source src="People_gathering_food_at_buffet_20260925101050.mp4" type="video/mp4">
+                        </video>
+                    </div>
                     <div class="p-6">
                         <h3 class="font-display text-2xl font-bold mb-2">Corporate / Braai Venue</h3>
                         <p class="text-slate-600 mb-4">Premium venue with tables, tablecloths, balloons, chairs, and curtains (2 colors).</p>
@@ -305,6 +357,7 @@
                             <span class="text-2xl font-bold text-golfGreen">R850</span>
                             <span class="text-sm text-slate-500 italic">Unlimited golf @ R40pp</span>
                         </div>
+                        <button @click="openBooking('Corporate / Braai Venue')" class="venue-booking-button w-full mt-6 py-3 rounded-xl bg-white text-golfGreen hover:text-white font-bold btn-bounce btn-liquid nav-liquid shadow-sm">Book Now</button>
                     </div>
                 </div>
             </div>
@@ -319,8 +372,8 @@
                 <p class="text-golfGreen max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="100">Transparent pricing for a day of joy.</p>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all relative overflow-hidden" data-aos="fade-up">
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all relative overflow-hidden text-center" data-aos="fade-up">
                     <div class="absolute top-0 right-0 bg-golfGreen text-white px-4 py-1 rounded-bl-xl font-bold text-xs">BEST VALUE</div>
                     <h3 class="font-display text-2xl font-bold mb-4">Putt-Putt Pack</h3>
                     <div class="text-4xl font-bold mb-6 text-slate-900">R90 <span class="text-lg font-normal text-slate-500">/person</span></div>
@@ -329,9 +382,8 @@
                         <li class="flex items-center gap-2">✅ Ticket valid for 1 month</li>
                         <li class="flex items-center gap-2">✅ All equipment included</li>
                     </ul>
-                    <button @click="openBooking('Putt-Putt Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid nav-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
                 </div>
-                <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all" data-aos="fade-up" data-aos-delay="100">
+                <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all text-center" data-aos="fade-up" data-aos-delay="100">
                     <h3 class="font-display text-2xl font-bold mb-4">Single Round</h3>
                     <div class="text-4xl font-bold mb-6 text-slate-900">R50 <span class="text-lg font-normal text-slate-500">/person</span></div>
                     <ul class="space-y-4 text-slate-600 mb-8">
@@ -340,16 +392,6 @@
                         <li class="flex items-center gap-2">✅ Great for a quick visit</li>
                     </ul>
                     <button @click="openBooking('Single Round')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid nav-liquid border border-slate-200 shadow-sm hover:text-white">Book Now</button>
-                </div>
-                <div class="glass p-8 rounded-3xl border-2 border-transparent hover:border-golfGreen transition-all" data-aos="fade-up" data-aos-delay="200">
-                    <h3 class="font-display text-2xl font-bold mb-4">Party Packs</h3>
-                    <div class="text-4xl font-bold mb-6 text-slate-900">R120 <span class="text-lg font-normal text-slate-500">/pack</span></div>
-                    <ul class="space-y-4 text-slate-600 mb-8">
-                        <li class="flex items-center gap-2">🧇 1 Waffle + Ice Cream</li>
-                        <li class="flex items-center gap-2">🥤 1 Oros + Packet Chips</li>
-                        <li class="flex items-center gap-2">🍭 Lollipop + 2 Fizzers</li>
-                    </ul>
-                    <button @click="openBooking('', 'Party Pack')" class="w-full py-3 rounded-xl bg-navyBlue md:bg-white text-white md:text-slate-900 font-bold btn-bounce btn-liquid nav-liquid border border-slate-200 shadow-sm hover:text-white">+ Add</button>
                 </div>
             </div>
         </div>
@@ -650,12 +692,24 @@
     </div>
 
     <!-- Reservation Modal -->
+    <div x-show="partyPackPromptOpen" x-transition class="fixed inset-0 z-[100] flex items-center justify-center p-6">
+        <div @click="partyPackPromptOpen = false" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 text-center">
+            <h3 class="font-display text-2xl font-bold mb-3">Add a Party Pack?</h3>
+            <p class="text-slate-600 mb-6">Add a Party Pack to your venue reservation for R120 per pack.</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button @click="continueToBooking(true)" class="flex-1 py-3 rounded-xl bg-golfGreen text-white font-bold btn-bounce">Yes, add it</button>
+                <button @click="continueToBooking(false)" class="flex-1 py-3 rounded-xl bg-slate-100 text-slate-900 font-bold btn-bounce">Continue without</button>
+            </div>
+        </div>
+    </div>
+
     <div x-show="bookingOpen" x-transition class="fixed inset-0 z-[100] flex items-center justify-center p-6">
         <div @click="bookingOpen = false" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white w-full max-w-lg max-h-[calc(100vh-3rem)] rounded-3xl shadow-2xl overflow-hidden flex flex-col" x-data="bookingFlow()" x-init="$watch('pendingBookingSelection', value => selection = value); $watch('pendingBookingAddOn', value => addOn = value)">
+        <div class="booking-modal relative bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl" x-data="bookingFlow()" x-init="$watch('pendingBookingSelection', value => selection = value); $watch('pendingPartyPack', value => partyPack = value); $watch('pendingBookingAddOn', value => addOn = value)">
             <!-- Header -->
             <div class="bg-golfGreen p-6 text-white flex justify-between items-center">
-            <h3 class="font-display text-2xl font-bold">Booking portal</h3>
+                <h3 class="font-display text-2xl font-bold">Booking Portal</h3>
                 <button @click="bookingOpen = false" class="text-white/80 hover:text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -691,8 +745,6 @@
                             <template x-if="!selection">
                                 <select x-model="selection" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
                                     <option value="">Select a plan...</option>
-                                    <option value="Putt-Putt Pack">Putt-Putt Pack (R90)</option>
-                                    <option value="Single Round">Single Round (R50)</option>
                                     <option value="Mini Town Venue">Mini Town Venue (R950)</option>
                                     <option value="Venue 1 & 2">Venue 1 & 2 (R450)</option>
                                     <option value="Corporate Venue">Corporate / Braai Venue (R850)</option>
@@ -707,6 +759,13 @@
                                     <span class="block text-sm text-slate-600">Waffle, ice cream, Oros, chips, lollipop and fizzers.</span>
                                 </span>
                             </label>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-sm mb-1">Party Pack</label>
+                            <select x-model="partyPack" class="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 ring-golfGreen outline-none">
+                                <option value="No Party Pack">No Party Pack</option>
+                                <option value="Party Pack (R120)">Add Party Pack (R120)</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block font-bold text-sm mb-1">Date</label>

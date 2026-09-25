@@ -5,7 +5,7 @@ html {
 body {
     min-width: 320px;
     overflow-x: hidden;
-    background: #f8fafc;
+    background: #1b5e20 url('https://images.unsplash.com/photo-1587174486073-ae5e5cff23aa?auto=format&fit=crop&w=2400&q=85') center / cover fixed;
 }
 
 .dynamic-bg {
@@ -13,10 +13,7 @@ body {
     inset: 0;
     z-index: -1;
     overflow: hidden;
-    background:
-        radial-gradient(circle at 15% 20%, rgba(163, 230, 53, 0.22), transparent 34%),
-        radial-gradient(circle at 85% 75%, rgba(176, 224, 230, 0.28), transparent 36%),
-        #f8fafc;
+    background: rgba(13, 68, 24, 0.3);
 }
 
 .background-video {
@@ -30,15 +27,22 @@ body {
 .bg-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 35, 10, 0.34);
+    transition: backdrop-filter 300ms ease, background 300ms ease;
+}
+
+body.venue-hover-active .bg-overlay {
+    background: rgba(0, 35, 10, 0.44);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
 }
 
 .glass {
-    background: rgba(255, 255, 255, 0.78);
-    border: 1px solid rgba(255, 255, 255, 0.86);
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    background: rgba(255, 255, 255, 0.64);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .btn-bounce {
@@ -55,6 +59,57 @@ body {
 
 .btn-liquid:hover:not(:disabled) {
     box-shadow: 0 10px 24px rgba(101, 163, 13, 0.28);
+}
+
+.venue-booking-button {
+    cursor: pointer;
+    color: #65a30d;
+    transition: transform 220ms ease, box-shadow 220ms ease;
+}
+
+.venue-booking-button:hover:not(:disabled) {
+    color: white;
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 14px 28px rgba(0, 0, 128, 0.3);
+}
+
+.venue-booking-button:active:not(:disabled) {
+    transform: translateY(-1px) scale(0.99);
+}
+
+.venue-card {
+    transition: transform 260ms ease, box-shadow 260ms ease;
+}
+
+.venue-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 26px 45px rgba(15, 23, 42, 0.26);
+}
+
+.venue-media {
+    position: relative;
+    overflow: hidden;
+}
+
+.venue-video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: filter 260ms ease, transform 260ms ease;
+}
+
+.venue-card:hover .venue-video {
+    transform: scale(1.06);
+}
+
+.booking-modal {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.booking-modal::-webkit-scrollbar {
+    display: none;
 }
 
 .nav-liquid {
@@ -87,17 +142,31 @@ body {
 }
 
 .loader-ball {
+    position: relative;
     display: grid;
-    width: 84px;
-    height: 84px;
+    width: 230px;
+    height: 230px;
     place-items: center;
-    border-radius: 999px;
-    color: white;
-    font-family: Fredoka, sans-serif;
-    font-weight: 700;
-    background: #65a30d;
-    box-shadow: 0 12px 30px rgba(101, 163, 13, 0.3);
     transition: transform 400ms ease, opacity 400ms ease;
+}
+
+.loader-logo {
+    position: relative;
+    z-index: 1;
+    width: 132px;
+    height: 132px;
+    object-fit: contain;
+    animation: loaderBreath 1.8s ease-in-out infinite;
+}
+
+@keyframes loaderBreath {
+    0%,
+    100% {
+        transform: scale(0.94);
+    }
+    50% {
+        transform: scale(1.06);
+    }
 }
 
 .loader-ball.exit {
